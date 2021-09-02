@@ -7,6 +7,15 @@ public extension Kenko {
       Just(true)
         .setFailureType(to: KenkoError.self)
         .eraseToAnyPublisher()
+    },
+    profile: {
+      Just(KenkoProfile(
+        biologicalSex: .male,
+        birthDate: nil,
+        bodyMass: 70,
+        height: 180
+      ))
+      .eraseToAnyPublisher()
     }
   )
 }
@@ -20,6 +29,10 @@ public extension Kenko {
   static let failure = Self(
     requestAuth: { _, _ in
       Fail(error: .requestAuthorized(nsError))
+        .eraseToAnyPublisher()
+    },
+    profile: {
+      Just(KenkoProfile())
         .eraseToAnyPublisher()
     }
   )

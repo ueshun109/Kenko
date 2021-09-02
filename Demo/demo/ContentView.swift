@@ -8,13 +8,13 @@ struct ContentView: View {
     self.viewModel = ViewModel(kenko: kenko)
   }
 
-  let items = ["Request Authorization"]
   var body: some View {
     List {
-      ForEach(items, id: \.self) { item in
-        Button(item) {
-          viewModel.requestAuth()
-        }
+      Button("Request Authorization") {
+        viewModel.requestAuth()
+      }
+      Button("Profile") {
+        viewModel.profile()
       }
     }
   }
