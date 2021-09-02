@@ -3,19 +3,25 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F4AEBB5326E0B46900487AD3 /* demoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AEBB5226E0B46900487AD3 /* demoApp.swift */; };
+		F43CD29026E0B85100C5DD7C /* Kenko in Frameworks */ = {isa = PBXBuildFile; productRef = F43CD28F26E0B85100C5DD7C /* Kenko */; };
+		F43CD29226E0BB1F00C5DD7C /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43CD29126E0BB1F00C5DD7C /* ViewModel.swift */; };
+		F43CD29526E0BD9300C5DD7C /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F43CD29426E0BD9300C5DD7C /* HealthKit.framework */; };
+		F4AEBB5326E0B46900487AD3 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AEBB5226E0B46900487AD3 /* App.swift */; };
 		F4AEBB5526E0B46900487AD3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4AEBB5426E0B46900487AD3 /* ContentView.swift */; };
 		F4AEBB5726E0B46C00487AD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4AEBB5626E0B46C00487AD3 /* Assets.xcassets */; };
 		F4AEBB5A26E0B46C00487AD3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4AEBB5926E0B46C00487AD3 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F43CD29126E0BB1F00C5DD7C /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		F43CD29326E0BD9300C5DD7C /* demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = demo.entitlements; sourceTree = "<group>"; };
+		F43CD29426E0BD9300C5DD7C /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		F4AEBB4F26E0B46900487AD3 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4AEBB5226E0B46900487AD3 /* demoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = demoApp.swift; sourceTree = "<group>"; };
+		F4AEBB5226E0B46900487AD3 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		F4AEBB5426E0B46900487AD3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F4AEBB5626E0B46C00487AD3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F4AEBB5926E0B46C00487AD3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -28,18 +34,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F43CD29026E0B85100C5DD7C /* Kenko in Frameworks */,
+				F43CD29526E0BD9300C5DD7C /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F43CD28E26E0B85100C5DD7C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F43CD29426E0BD9300C5DD7C /* HealthKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F4AEBB4626E0B46900487AD3 = {
 			isa = PBXGroup;
 			children = (
 				F4AEBB6126E0B7BE00487AD3 /* Kenko */,
 				F4AEBB5126E0B46900487AD3 /* demo */,
 				F4AEBB5026E0B46900487AD3 /* Products */,
+				F43CD28E26E0B85100C5DD7C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,11 +71,13 @@
 		F4AEBB5126E0B46900487AD3 /* demo */ = {
 			isa = PBXGroup;
 			children = (
-				F4AEBB5226E0B46900487AD3 /* demoApp.swift */,
+				F43CD29326E0BD9300C5DD7C /* demo.entitlements */,
+				F4AEBB5226E0B46900487AD3 /* App.swift */,
 				F4AEBB5426E0B46900487AD3 /* ContentView.swift */,
 				F4AEBB5626E0B46C00487AD3 /* Assets.xcassets */,
 				F4AEBB5B26E0B46C00487AD3 /* Info.plist */,
 				F4AEBB5826E0B46C00487AD3 /* Preview Content */,
+				F43CD29126E0BB1F00C5DD7C /* ViewModel.swift */,
 			);
 			path = demo;
 			sourceTree = "<group>";
@@ -87,6 +106,9 @@
 			dependencies = (
 			);
 			name = demo;
+			packageProductDependencies = (
+				F43CD28F26E0B85100C5DD7C /* Kenko */,
+			);
 			productName = demo;
 			productReference = F4AEBB4F26E0B46900487AD3 /* demo.app */;
 			productType = "com.apple.product-type.application";
@@ -141,7 +163,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4AEBB5526E0B46900487AD3 /* ContentView.swift in Sources */,
-				F4AEBB5326E0B46900487AD3 /* demoApp.swift in Sources */,
+				F43CD29226E0BB1F00C5DD7C /* ViewModel.swift in Sources */,
+				F4AEBB5326E0B46900487AD3 /* App.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +292,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = demo/demo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"demo/Preview Content\"";
 				DEVELOPMENT_TEAM = LU7T99HSUL;
@@ -291,6 +315,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = demo/demo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"demo/Preview Content\"";
 				DEVELOPMENT_TEAM = LU7T99HSUL;
@@ -330,6 +355,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F43CD28F26E0B85100C5DD7C /* Kenko */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Kenko;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F4AEBB4726E0B46900487AD3 /* Project object */;
 }
