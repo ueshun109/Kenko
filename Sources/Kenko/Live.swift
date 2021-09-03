@@ -20,6 +20,7 @@ public extension Kenko {
       }
       .eraseToAnyPublisher()
     },
+
     profile: {
       let biologicalSex = Future<HKBiologicalSex?, KenkoError> { completion in
         do {
@@ -98,6 +99,40 @@ public extension Kenko {
       let zipped = biologicalSex.zip(birthDate, bodyMass, height)
       return zipped.map { sex, birthDate, bodyMass, height -> KenkoProfile in
         KenkoProfile(biologicalSex: sex, birthDate: birthDate, bodyMass: bodyMass, height: height)
+      }
+      .eraseToAnyPublisher()
+    },
+
+    heartRate: { type, startDate, endDate, option in
+      Future { completion in
+        let predicate = HKQuery.predicateForSamples(
+          withStart: startDate,
+          end: endDate,
+          options: .strictStartDate
+        )
+        let query = HKStatisticsQuery(
+          quantityType: type.dataType,
+          quantitySamplePredicate: predicate,
+          options: option
+        ) { _, statistics, error in
+          if let error = error {
+            logger.error("\(error.localizedDescription)")
+            completion(.failure(.heartRate(error as NSError)))
+          } else {
+            var value: Double?
+            switch option {
+            case .discreteAverage:
+              value = statistics!.averageQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
+            case .discreteMax:
+              value = statistics!.maximumQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
+            case .discreteMin:
+              value = statistics!.minimumQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
+            default: break
+            }
+            completion(.success(value ?? 0))
+          }
+        }
+        healthStore.execute(query)
       }
       .eraseToAnyPublisher()
     }

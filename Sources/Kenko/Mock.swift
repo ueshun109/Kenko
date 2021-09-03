@@ -16,6 +16,11 @@ public extension Kenko {
         height: 180
       ))
       .eraseToAnyPublisher()
+    },
+    heartRate: { _, _, _, _ in
+      Just(100)
+        .setFailureType(to: KenkoError.self)
+        .eraseToAnyPublisher()
     }
   )
 }
@@ -33,6 +38,10 @@ public extension Kenko {
     },
     profile: {
       Just(KenkoProfile())
+        .eraseToAnyPublisher()
+    },
+    heartRate: { _, _, _, _ in
+      Fail(error: .heartRate(nsError))
         .eraseToAnyPublisher()
     }
   )

@@ -16,6 +16,9 @@ struct ContentView: View {
       Button("Profile") {
         viewModel.profile()
       }
+      Button("heartRate") {
+        viewModel.heartRate()
+      }
     }
   }
 }

@@ -13,4 +13,11 @@ public struct Kenko {
   ) -> AnyPublisher<Bool, KenkoError>
 
   public var profile: () -> AnyPublisher<KenkoProfile, Never>
+
+  public var heartRate: (
+    _ type: VitalSigns.HeartRate,
+    _ startDate: Date,
+    _ endDate: Date,
+    HKStatisticsOptions
+  ) -> AnyPublisher<Double, KenkoError>
 }
