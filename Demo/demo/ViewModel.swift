@@ -20,6 +20,7 @@ final class ViewModel {
         HKObjectType.quantityType(forIdentifier: .heartRate)!,
         HKObjectType.quantityType(forIdentifier: .restingHeartRate)!,
         HKObjectType.quantityType(forIdentifier: .walkingHeartRateAverage)!,
+        HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!,
       ]
     )
     kenko.requestAuth([.workoutType()], read)
@@ -59,6 +60,28 @@ final class ViewModel {
         }
       } receiveValue: {
         print("result: \($0)")
+      }
+      .store(in: &self.cancellables)
+  }
+
+  func sleepAnalysis() {
+    kenko.sleepAnalysis(.sleepAnalysis, nil, nil)
+      .sink { result in
+        switch result {
+        case .finished:
+          print("finished")
+        case let .failure(error):
+          print("failed: \(error.message)")
+        }
+      } receiveValue: { samples in
+        samples.forEach {
+          switch HKCategoryValueSleepAnalysis(rawValue: $0.value) {
+          case .asleep: print("result: asleep, start: \($0.startDate)")
+          case .awake: print("result: awake, start: \($0.startDate)")
+          case .inBed: print("result: inBed, start: \($0.startDate)")
+          case .none, .some(_): fatalError()
+          }
+        }
       }
       .store(in: &self.cancellables)
   }

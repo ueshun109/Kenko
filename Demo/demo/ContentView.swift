@@ -19,6 +19,9 @@ struct ContentView: View {
       Button("heartRate") {
         viewModel.heartRate()
       }
+      Button("sleepAnalysis") {
+        viewModel.sleepAnalysis()
+      }
     }
   }
 }

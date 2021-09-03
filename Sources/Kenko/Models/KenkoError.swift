@@ -1,6 +1,7 @@
 import Foundation
 
 public enum KenkoError: Equatable, LocalizedError {
+  case error(NSError)
   case heartRate(NSError)
   case notFound
   case profile(NSError)
@@ -8,6 +9,8 @@ public enum KenkoError: Equatable, LocalizedError {
 
   public var message: String {
     switch self {
+    case let .error(error):
+      return error.localizedDescription
     case let .heartRate(error):
       return error.localizedDescription
     case .notFound:

@@ -135,6 +135,32 @@ public extension Kenko {
         healthStore.execute(query)
       }
       .eraseToAnyPublisher()
+    },
+
+    sleepAnalysis: { type, startDate, endDate in
+      Future { completion in
+        let predicate = HKQuery.predicateForSamples(
+          withStart: startDate,
+          end: endDate,
+          options: .strictStartDate
+        )
+        let query = HKSampleQuery(
+          sampleType: type.dataType,
+          predicate: predicate,
+          limit: HKObjectQueryNoLimit,
+          sortDescriptors: nil
+        ) { _, result, error in
+          if let error = error {
+            logger.error("\(error.localizedDescription)")
+            completion(.failure(.heartRate(error as NSError)))
+          } else {
+            let samples = result!.compactMap { $0 as? HKCategorySample }
+            completion(.success(samples))
+          }
+        }
+        healthStore.execute(query)
+      }
+      .eraseToAnyPublisher()
     }
   )
 }

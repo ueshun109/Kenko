@@ -15,9 +15,15 @@ public struct Kenko {
   public var profile: () -> AnyPublisher<KenkoProfile, Never>
 
   public var heartRate: (
-    _ type: VitalSigns.HeartRate,
+    _ type: VitalSigns.HeartRate.Quantity,
     _ startDate: Date,
     _ endDate: Date,
     HKStatisticsOptions
   ) -> AnyPublisher<Double, KenkoError>
+
+  public var sleepAnalysis: (
+    _ type: MindfulnessAndSleep,
+    _ startDate: Date?,
+    _ endDate: Date?
+  ) -> AnyPublisher<[HKCategorySample], KenkoError>
 }

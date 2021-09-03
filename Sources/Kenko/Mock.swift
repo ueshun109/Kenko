@@ -1,4 +1,5 @@
 import Combine
+import HealthKit
 import Foundation
 
 public extension Kenko {
@@ -19,6 +20,17 @@ public extension Kenko {
     },
     heartRate: { _, _, _, _ in
       Just(100)
+        .setFailureType(to: KenkoError.self)
+        .eraseToAnyPublisher()
+    },
+    sleepAnalysis:  { _, _, _ in
+      let sample = HKCategorySample(
+        type: .categoryType(forIdentifier: .sleepAnalysis)!,
+        value: 1,
+        start: Date(),
+        end: Date()
+      )
+      return Just([sample])
         .setFailureType(to: KenkoError.self)
         .eraseToAnyPublisher()
     }
@@ -42,6 +54,10 @@ public extension Kenko {
     },
     heartRate: { _, _, _, _ in
       Fail(error: .heartRate(nsError))
+        .eraseToAnyPublisher()
+    },
+    sleepAnalysis:  { _, _, _ in
+      Fail(error: .error(nsError))
         .eraseToAnyPublisher()
     }
   )
