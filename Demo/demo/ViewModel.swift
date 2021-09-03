@@ -21,6 +21,7 @@ final class ViewModel {
         HKObjectType.quantityType(forIdentifier: .restingHeartRate)!,
         HKObjectType.quantityType(forIdentifier: .walkingHeartRateAverage)!,
         HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!,
+        .workoutType()
       ]
     )
     kenko.requestAuth([.workoutType()], read)
@@ -81,6 +82,23 @@ final class ViewModel {
           case .inBed: print("result: inBed, start: \($0.startDate)")
           case .none, .some(_): fatalError()
           }
+        }
+      }
+      .store(in: &self.cancellables)
+  }
+
+  func workouts() {
+    kenko.workouts(.running, nil, nil, false)
+      .sink { result in
+        switch result {
+        case .finished:
+          print("finished")
+        case let .failure(error):
+          print("failed: \(error.message)")
+        }
+      } receiveValue: { workouts in
+        workouts.forEach {
+          print("startDate: \($0.startDate), endDate: \($0.startDate), distance: \($0.totalDistance?.doubleValue(for: .meterUnit(with: .kilo)) ?? 0)")
         }
       }
       .store(in: &self.cancellables)

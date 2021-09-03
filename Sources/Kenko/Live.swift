@@ -4,19 +4,36 @@ import HealthKit
 
 public extension Kenko {
   static let live = Self(
-    requestAuth: { save, read in
+    heartRate: { type, startDate, endDate, option in
       Future { completion in
-        healthStore.requestAuthorization(
-          toShare: save,
-          read: read
-        ) { result, error in
+        let predicate = HKQuery.predicateForSamples(
+          withStart: startDate,
+          end: endDate,
+          options: .strictStartDate
+        )
+        let query = HKStatisticsQuery(
+          quantityType: type.dataType,
+          quantitySamplePredicate: predicate,
+          options: option
+        ) { _, statistics, error in
           if let error = error {
-            completion(.failure(.requestAuthorized(error as NSError)))
-            logger.error("Request Authorization failed.")
+            logger.error("\(error.localizedDescription)")
+            completion(.failure(.heartRate(error as NSError)))
           } else {
-            completion(.success(result))
+            var value: Double?
+            switch option {
+            case .discreteAverage:
+              value = statistics!.averageQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
+            case .discreteMax:
+              value = statistics!.maximumQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
+            case .discreteMin:
+              value = statistics!.minimumQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
+            default: break
+            }
+            completion(.success(value ?? 0))
           }
         }
+        healthStore.execute(query)
       }
       .eraseToAnyPublisher()
     },
@@ -103,36 +120,19 @@ public extension Kenko {
       .eraseToAnyPublisher()
     },
 
-    heartRate: { type, startDate, endDate, option in
+    requestAuth: { save, read in
       Future { completion in
-        let predicate = HKQuery.predicateForSamples(
-          withStart: startDate,
-          end: endDate,
-          options: .strictStartDate
-        )
-        let query = HKStatisticsQuery(
-          quantityType: type.dataType,
-          quantitySamplePredicate: predicate,
-          options: option
-        ) { _, statistics, error in
+        healthStore.requestAuthorization(
+          toShare: save,
+          read: read
+        ) { result, error in
           if let error = error {
-            logger.error("\(error.localizedDescription)")
-            completion(.failure(.heartRate(error as NSError)))
+            completion(.failure(.requestAuthorized(error as NSError)))
+            logger.error("Request Authorization failed.")
           } else {
-            var value: Double?
-            switch option {
-            case .discreteAverage:
-              value = statistics!.averageQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
-            case .discreteMax:
-              value = statistics!.maximumQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
-            case .discreteMin:
-              value = statistics!.minimumQuantity()?.doubleValue(for: HKUnit(from: "count/min"))
-            default: break
-            }
-            completion(.success(value ?? 0))
+            completion(.success(result))
           }
         }
-        healthStore.execute(query)
       }
       .eraseToAnyPublisher()
     },
@@ -156,6 +156,41 @@ public extension Kenko {
           } else {
             let samples = result!.compactMap { $0 as? HKCategorySample }
             completion(.success(samples))
+          }
+        }
+        healthStore.execute(query)
+      }
+      .eraseToAnyPublisher()
+    },
+
+    workouts: { type, startDate, endDate, ownAppOnly in
+      Future { completion in
+        let compoundPredicate: (
+          NSPredicate,
+          NSPredicate?,
+          NSPredicate
+        ) -> NSCompoundPredicate = { session, source, workout in
+          if let source = source {
+            return NSCompoundPredicate(andPredicateWithSubpredicates: [session, source, workout])
+          } else {
+            return NSCompoundPredicate(andPredicateWithSubpredicates: [session, workout])
+          }
+        }
+        let sessionPredicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
+        let sourcePredicate: NSPredicate? = ownAppOnly ? HKQuery.predicateForObjects(from: .default()) : nil
+        let workoutPredicate = HKQuery.predicateForWorkouts(with: type)
+
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+        let query = HKSampleQuery(
+          sampleType: .workoutType(),
+          predicate: compoundPredicate(sessionPredicate, sourcePredicate, workoutPredicate),
+          limit: HKObjectQueryNoLimit,
+          sortDescriptors: [sortDescriptor]
+        ) { _, samples, error in
+          if let error = error {
+            completion(.failure(.error(error as NSError)))
+          } else {
+            completion(.success(samples as! [HKWorkout]))
           }
         }
         healthStore.execute(query)

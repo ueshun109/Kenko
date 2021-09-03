@@ -4,8 +4,8 @@ import Foundation
 
 public extension Kenko {
   static let mock = Self(
-    requestAuth: { _, _ in
-      Just(true)
+    heartRate: { _, _, _, _ in
+      Just(100)
         .setFailureType(to: KenkoError.self)
         .eraseToAnyPublisher()
     },
@@ -18,8 +18,8 @@ public extension Kenko {
       ))
       .eraseToAnyPublisher()
     },
-    heartRate: { _, _, _, _ in
-      Just(100)
+    requestAuth: { _, _ in
+      Just(true)
         .setFailureType(to: KenkoError.self)
         .eraseToAnyPublisher()
     },
@@ -33,6 +33,12 @@ public extension Kenko {
       return Just([sample])
         .setFailureType(to: KenkoError.self)
         .eraseToAnyPublisher()
+    },
+    workouts: { _, _, _, _ in
+      let workout = HKWorkout(activityType: .running, start: Date(), end: Date())
+      return Just([workout])
+        .setFailureType(to: KenkoError.self)
+        .eraseToAnyPublisher()
     }
   )
 }
@@ -44,19 +50,23 @@ public extension Kenko {
     userInfo: [NSLocalizedDescriptionKey: "Occurred error"]
   )
   static let failure = Self(
-    requestAuth: { _, _ in
-      Fail(error: .requestAuthorized(nsError))
+    heartRate: { _, _,_,_  in
+      Fail(error: .heartRate(nsError))
         .eraseToAnyPublisher()
     },
     profile: {
       Just(KenkoProfile())
         .eraseToAnyPublisher()
     },
-    heartRate: { _, _, _, _ in
-      Fail(error: .heartRate(nsError))
+    requestAuth: { _, _ in
+      Fail(error: .requestAuthorized(nsError))
         .eraseToAnyPublisher()
     },
     sleepAnalysis:  { _, _, _ in
+      Fail(error: .error(nsError))
+        .eraseToAnyPublisher()
+    },
+    workouts:  { _, _, _, _ in
       Fail(error: .error(nsError))
         .eraseToAnyPublisher()
     }

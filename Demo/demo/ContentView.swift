@@ -22,6 +22,9 @@ struct ContentView: View {
       Button("sleepAnalysis") {
         viewModel.sleepAnalysis()
       }
+      Button("workouts") {
+        viewModel.workouts()
+      }
     }
   }
 }
